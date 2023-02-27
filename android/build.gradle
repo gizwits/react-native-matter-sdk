@@ -82,7 +82,7 @@ dependencies {
 if (isNewArchitectureEnabled()) {
     react {
         jsRootDir = file("../src/")
-        libraryName = "MatterSdk"
-        codegenJavaPackageName = "com.mattersdk"
+        libraryName = "Matter"
+        codegenJavaPackageName = "com.gizwits.matter.sdk"
     }
 }

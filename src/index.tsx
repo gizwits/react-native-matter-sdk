@@ -6,8 +6,8 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
-const MatterSdk = NativeModules.MatterSdk
-  ? NativeModules.MatterSdk
+const Matter = NativeModules.Matter
+  ? NativeModules.Matter
   : new Proxy(
       {},
       {
@@ -18,5 +18,5 @@ const MatterSdk = NativeModules.MatterSdk
     );
 
 export function multiply(a: number, b: number): Promise<number> {
-  return MatterSdk.multiply(a, b);
+  return Matter.multiply(a, b);
 }

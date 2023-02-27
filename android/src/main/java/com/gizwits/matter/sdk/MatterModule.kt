@@ -1,11 +1,11 @@
-package com.mattersdk
+package com.gizwits.matter.sdk
 
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
 
-class MatterSdkModule(reactContext: ReactApplicationContext) :
+class MatterModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
 
     override fun getName(): String {
@@ -20,6 +20,7 @@ class MatterSdkModule(reactContext: ReactApplicationContext) :
     }
 
     companion object {
-        const val NAME = "MatterSdk"
+        const val NAME = "Matter"
     }
+
 }
