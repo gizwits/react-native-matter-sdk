@@ -45,32 +45,52 @@ class MatterModule(reactContext: ReactApplicationContext) :
     }
 
     /**
+     * 根据设备ID获取映射到已配对设备的指针
+     * @param deviceIdStr 设备ID的字符串表示形式
+     * @param promise 成功则返回设备的指针
+     */
+    @ReactMethod
+    fun getPairedDevicePointer(deviceIdStr: String, promise: Promise) {
+        val deviceId: Long = deviceIdStr.toLong()
+        moduleScope.launch {
+            Matter.getPairedDevicePointer(deviceId)
+                .onSuccess {
+                    promise.resolve(it.toString())
+                }.onFailure {
+                    promise.reject(it)
+                }
+        }
+    }
+
+    /**
      * 通过蓝牙搜索并配对设备，并将其添加至网络
-     * @param deviceId 设备的ID
+     * @param deviceIdStr 设备的ID的字符串表现形式
      * @param discriminator 设备识别码
-     * @param setupPinCode 身份校验码
+     * @param setupPinCodeStr 身份校验码的字符串表现形式
      * @param wifiSSID wifi名称
      * @param wifiPassword wifi密码
      * @param promise 成功则返回设备的ID，否则返回异常
      */
     @ReactMethod
     fun pairDeviceWithBle(
-        deviceId: Int,
+        deviceIdStr: String,
         discriminator: Int,
-        setupPinCode: Int,
+        setupPinCodeStr: String,
         wifiSSID: String,
         wifiPassword: String,
         promise: Promise
     ) {
+        val deviceId: Long = deviceIdStr.toLong()
+        val setupPinCode: Long = setupPinCodeStr.toLong()
         moduleScope.launch {
             Matter.pairDeviceWithBle(
-                deviceId = deviceId.toLong(),
+                deviceId = deviceId,
                 discriminator = discriminator,
-                setupPinCode = setupPinCode.toLong(),
+                setupPinCode = setupPinCode,
                 wifiSSID = wifiSSID,
                 wifiPassword = wifiPassword
             ).onSuccess {
-                promise.resolve(it.toInt())
+                promise.resolve(it.toString())
             }.onFailure {
                 promise.reject(it)
             }

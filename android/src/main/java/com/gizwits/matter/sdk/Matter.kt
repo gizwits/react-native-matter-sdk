@@ -8,6 +8,7 @@ import android.content.Context
 import android.os.ParcelUuid
 import chip.devicecontroller.ChipDeviceController
 import chip.devicecontroller.ControllerParams
+import chip.devicecontroller.GetConnectedDeviceCallbackJni
 import chip.devicecontroller.NetworkCredentials
 import chip.platform.*
 import chip.setuppayload.SetupPayloadParser
@@ -75,6 +76,34 @@ object Matter {
                     .parseQrCode(qrCodeContent)
                     .asMatterSetupPayload()
             )
+        }
+    }
+
+    /**
+     * 根据设备ID获取映射到已配对设备的指针
+     * @param deviceId 设备ID
+     * @return 映射到对应设备的指针
+     */
+    suspend fun getPairedDevicePointer(deviceId: Long): Result<Long> {
+        return runCatching<Matter, Long> {
+            suspendCancellableCoroutine {
+                chipDeviceController.getConnectedDevicePointer(
+                    deviceId,
+                    object : GetConnectedDeviceCallbackJni.GetConnectedDeviceCallback {
+
+                        override fun onDeviceConnected(devicePointer: Long) {
+                            it.resumeWith(Result.success(devicePointer))
+                        }
+
+                        override fun onConnectionFailure(deviceId: Long, exception: Exception) {
+                            it.resumeWith(Result.failure(exception))
+                        }
+
+                    }
+                )
+            }
+        }.onFailure {
+            if (it is CancellationException) throw it
         }
     }
 
