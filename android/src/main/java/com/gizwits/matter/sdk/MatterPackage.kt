@@ -4,12 +4,16 @@ import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.uimanager.ViewManager
+import com.gizwits.matter.sdk.module.DescriptorClusterModule
 
 
 class MatterPackage : ReactPackage {
 
     override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
-        return listOf(MatterModule(reactContext))
+        return listOf(
+            MatterModule(reactContext),
+            DescriptorClusterModule(reactContext)
+        )
     }
 
     override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {

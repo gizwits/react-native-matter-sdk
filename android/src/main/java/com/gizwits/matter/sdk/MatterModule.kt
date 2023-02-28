@@ -103,7 +103,7 @@ class MatterModule(reactContext: ReactApplicationContext) :
 
     companion object {
 
-        const val NAME = "Matter"
+        const val NAME = "MatterModule"
 
         const val VENDOR_ID = 0xFFF4
 

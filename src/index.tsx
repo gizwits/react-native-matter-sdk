@@ -1,21 +1,7 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules } from 'react-native';
+export * from './clusters';
 
-const LINKING_ERROR =
-  `The package 'react-native-matter-sdk' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n';
-
-const Matter = NativeModules.Matter
-  ? NativeModules.Matter
-  : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
+const MatterModule = NativeModules.MatterModule;
 
 /**
  * 解析Matter设备所关联的配对二维码内容，返回用于配对设备的负载信息
@@ -23,7 +9,7 @@ const Matter = NativeModules.Matter
  * @returns 成功则返回Json形式的设备产品信息
  */
 export function parseForSetupPayload(qrCodeContent: string): Promise<string> {
-  return Matter.parseForSetupPayload(qrCodeContent);
+  return MatterModule.parseForSetupPayload(qrCodeContent);
 }
 
 /**
@@ -32,7 +18,7 @@ export function parseForSetupPayload(qrCodeContent: string): Promise<string> {
  * @returns 成功则返回设备的指针（长整形）的字符串表现形式
  */
 export function getPairedDevicePointer(deviceId: number): Promise<string> {
-  return Matter.getPairedDevicePointer(deviceId);
+  return MatterModule.getPairedDevicePointer(deviceId);
 }
 
 /**
@@ -53,7 +39,7 @@ export function pairDeviceWithBle(
 ): Promise<string> {
   let deviceIdStr: string = String(deviceId);
   let setupPinCodeStr: string = String(setupPinCode);
-  return Matter.pairDeviceWithBle(
+  return MatterModule.pairDeviceWithBle(
     deviceIdStr,
     discriminator,
     setupPinCodeStr,

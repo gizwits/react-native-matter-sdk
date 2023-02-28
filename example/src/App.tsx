@@ -1,13 +1,13 @@
 import * as React from 'react';
 
 import { StyleSheet, View, Text } from 'react-native';
-// import { pairDeviceWithBle } from 'react-native-matter-sdk';
+// import { DescriptorCluster } from 'react-native-matter-sdk';
 
 export default function App() {
   // const [result, setResult] = React.useState<string | undefined>();
 
   React.useEffect(() => {
-    // MT:Y.K9042C00KA0648G00
+    // new DescriptorCluster(0, 0);
   }, []);
 
   return (
