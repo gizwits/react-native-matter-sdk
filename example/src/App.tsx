@@ -1,18 +1,47 @@
 import * as React from 'react';
 
 import { StyleSheet, View, Text } from 'react-native';
-// import { DescriptorCluster } from 'react-native-matter-sdk';
+import { pairDeviceWithBle, getPairedDevicePointer, OnOffCluster } from 'react-native-matter-sdk';
 
 export default function App() {
-  // const [result, setResult] = React.useState<string | undefined>();
+  const [message, setMessage] = React.useState<string | undefined>();
+  const [devicePointer, setDevicePointer] = React.useState<string | undefined>();
 
   React.useEffect(() => {
-    // new DescriptorCluster(0, 0);
+    // 配对Matter设备
+    let deviceId: number = 1   
+    let discriminator: number = 3840
+    let setupPinCode: number = 20202021
+    let wifiSSID: string = 'MERCURY_23A4'
+    let wifiPassword: string = '#web123456'
+    console.log("pairDeviceWithBle")
+    pairDeviceWithBle(deviceId, discriminator, setupPinCode, wifiSSID, wifiPassword).then(
+      (value) => {
+        console.log("pairDeviceWithBle success")
+        setMessage("success")
+        console.log("getPairedDevicePointer")
+        getPairedDevicePointer(Number(value)).then((devicePointerStr) => {
+          setDevicePointer(devicePointerStr)
+          console.log("toggle")
+          new OnOffCluster(Number(devicePointerStr), 1).toggle().then(() => {
+            console.log("toggle success")
+          }).catch(() => {
+            console.log("toggle failure")
+          })
+        })
+      }
+    ).catch(
+      () => {
+        console.log("pairDeviceWithBle failure")
+        setMessage("failure")
+      }
+    )
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text>Text</Text>
+      <Text>pairDeviceWithBle: {message}</Text>
+      <Text>devicePointer: {devicePointer}</Text>
     </View>
   );
 }

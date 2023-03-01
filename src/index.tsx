@@ -18,7 +18,8 @@ export function parseForSetupPayload(qrCodeContent: string): Promise<string> {
  * @returns 成功则返回设备的指针（长整形）的字符串表现形式
  */
 export function getPairedDevicePointer(deviceId: number): Promise<string> {
-  return MatterModule.getPairedDevicePointer(deviceId);
+  let deviceIdStr: string = String(deviceId);
+  return MatterModule.getPairedDevicePointer(deviceIdStr);
 }
 
 /**
