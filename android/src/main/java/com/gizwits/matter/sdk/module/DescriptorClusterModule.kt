@@ -29,7 +29,7 @@ class DescriptorClusterModule(
                 override fun onSuccess(deviceTypeList: MutableList<ChipStructs.DescriptorClusterDeviceTypeStruct>) {
                     promise.resolve(
                         Arguments.makeNativeArray(
-                            deviceTypeList.map { it.type }
+                            deviceTypeList.map { it.type.toString() }
                         )
                     )
                 }

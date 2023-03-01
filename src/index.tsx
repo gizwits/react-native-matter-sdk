@@ -14,32 +14,29 @@ export function parseForSetupPayload(qrCodeContent: string): Promise<string> {
 
 /**
  * 根据设备ID获取映射到已配对设备的指针
- * @param deviceId 设备ID
+ * @param deviceIdStr 设备ID的字符串表现形式
  * @returns 成功则返回设备的指针（长整形）的字符串表现形式
  */
-export function getPairedDevicePointer(deviceId: number): Promise<string> {
-  let deviceIdStr: string = String(deviceId);
+export function getPairedDevicePointer(deviceIdStr: string): Promise<string> {
   return MatterModule.getPairedDevicePointer(deviceIdStr);
 }
 
 /**
  * 通过蓝牙搜索并配对设备，并将其添加至网络
- * @param deviceId 设备的ID
+ * @param deviceIdStr 设备的ID的字符串表现形式
  * @param discriminator 设备识别码
- * @param setupPinCode 身份校验码
+ * @param setupPinCodeStr 身份校验码的字符串表现形式
  * @param wifiSSID wifi名称
  * @param wifiPassword wifi密码
  * @returns 成功则返回设备ID（长整形）的字符串表现形式
  */
 export function pairDeviceWithBle(
-  deviceId: number,
+  deviceIdStr: number,
   discriminator: number,
-  setupPinCode: number,
+  setupPinCodeStr: number,
   wifiSSID: string,
   wifiPassword: string
 ): Promise<string> {
-  let deviceIdStr: string = String(deviceId);
-  let setupPinCodeStr: string = String(setupPinCode);
   return MatterModule.pairDeviceWithBle(
     deviceIdStr,
     discriminator,

@@ -11,15 +11,12 @@ const OnOffClusterModule = NativeModules.OnOffClusterModule
 const LevelControlClusterModule = NativeModules.LevelControlClusterModule
 
 class BaseCluster {
-  devicePointer: number;
-
   devicePointerStr: string;
 
   endpointId: number;
 
-  constructor(devicePointer: number, endpointId: number) {
-    this.devicePointer = devicePointer;
-    this.devicePointerStr = String(devicePointer)
+  constructor(devicePointerStr: string, endpointId: number) {
+    this.devicePointerStr = devicePointerStr
     this.endpointId = endpointId;
   }
 }
@@ -28,9 +25,9 @@ export class DescriptorCluster extends BaseCluster {
 
   /**
    * 读取指定设备的指点端点的设备类型列表
-   * @returns 成功则返回设备端点的设备类型列表
+   * @returns 成功则返回设备端点的设备类型（字符串表现形式）列表
    */
-  readDeviceTypeList(): Promise<Array<number>> {
+  readDeviceTypeList(): Promise<Array<string>> {
     return DescriptorClusterModule.readDeviceTypeList(
       this.devicePointerStr,
       this.endpointId
