@@ -4,6 +4,8 @@ const BasicClusterModule = NativeModules.BasicClusterModule
 
 const DescriptorClusterModule = NativeModules.DescriptorClusterModule
 
+const GeneralDiagnosticsClusterModule = NativeModules.GeneralDiagnosticsClusterModule
+
 const OnOffClusterModule = NativeModules.OnOffClusterModule
 
 const LevelControlClusterModule = NativeModules.LevelControlClusterModule
@@ -130,6 +132,7 @@ export class LevelControlCluster extends BaseCluster {
    * @param red red通道
    * @param green green通道
    * @param blue blue通道
+   * @returns
    */
   moveToLevel(alpha: number, red: number, green: number, blue: number): Promise<undefined> {
     return LevelControlClusterModule.moveToLevel(
@@ -139,6 +142,21 @@ export class LevelControlCluster extends BaseCluster {
       red,
       green,
       blue
+    )
+  }
+
+}
+
+export class GeneralDiagnosticsCluster extends BaseCluster {
+
+  /**
+   * 读取设备的网络接口信息
+   * @returns 成功则返回网络接口信息
+   */
+  readNetworkInterfaces(): Promise<string> {
+    return GeneralDiagnosticsClusterModule.readNetworkInterfaces(
+      this.devicePointerStr,
+      this.endpointId,
     )
   }
 
