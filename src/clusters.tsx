@@ -10,6 +10,8 @@ const OnOffClusterModule = NativeModules.OnOffClusterModule
 
 const LevelControlClusterModule = NativeModules.LevelControlClusterModule
 
+const ColorControlClusterModule = NativeModules.ColorControlClusterModule
+
 class BaseCluster {
   devicePointerStr: string;
 
@@ -135,21 +137,21 @@ export class OnOffCluster extends BaseCluster {
 export class LevelControlCluster extends BaseCluster {
 
   /**
-   * 修改灯光的RGB至指定值
-   * @param alpha alpha通道
-   * @param red red通道
-   * @param green green通道
-   * @param blue blue通道
+   * 修改亮度等级
+   * @param level 亮度等级
+   * @param transitionTime 
+   * @param optionsMask 
+   * @param optionsOverride 
    * @returns
    */
-  moveToLevel(alpha: number, red: number, green: number, blue: number): Promise<undefined> {
+  moveToLevel(level: number, transitionTime: number, optionsMask: number, optionsOverride: number): Promise<undefined> {
     return LevelControlClusterModule.moveToLevel(
       this.devicePointerStr,
       this.endpointId,
-      alpha,
-      red,
-      green,
-      blue
+      level,
+      transitionTime,
+      optionsMask,
+      optionsOverride
     )
   }
 
@@ -176,6 +178,33 @@ export class GeneralDiagnosticsCluster extends BaseCluster {
     return GeneralDiagnosticsClusterModule.readNetworkInterfaces(
       this.devicePointerStr,
       this.endpointId,
+    )
+  }
+
+}
+
+export class ColorControlCluster extends BaseCluster {
+
+  /**
+   * 颜色控制，修改色调和饱和度
+   * @param hue 
+   * @param saturation 
+   * @param transitionTime 
+   * @param optionsMask 
+   * @param optionsOverride 
+   * @returns 
+   */
+  moveToHueAndSaturation(
+    hue: number, saturation: number, transitionTime: number, optionsMask: number, optionsOverride: number
+  ): Promise<undefined> {
+    return ColorControlClusterModule.moveToHueAndSaturation(
+      this.devicePointerStr,
+      this.endpointId,
+      hue,
+      saturation, 
+      transitionTime,
+      optionsMask,
+      optionsOverride
     )
   }
 

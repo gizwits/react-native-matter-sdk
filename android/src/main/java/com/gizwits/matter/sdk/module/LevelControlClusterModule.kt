@@ -16,10 +16,10 @@ class LevelControlClusterModule(
     fun moveToLevel(
         devicePointerStr: String,
         endpointId: Int,
-        alpha: Int,
-        red: Int,
-        green: Int,
-        blue: Int,
+        level: Int,
+        transitionTime: Int,
+        optionsMask: Int,
+        optionsOverride: Int,
         promise: Promise
     ) {
         val devicePointer: Long = devicePointerStr.toLong()
@@ -34,7 +34,7 @@ class LevelControlClusterModule(
                     promise.reject(error)
                 }
 
-            }, alpha, red, green, blue
+            }, level, transitionTime, optionsMask, optionsOverride
         )
     }
 

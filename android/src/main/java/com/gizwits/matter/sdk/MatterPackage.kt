@@ -16,7 +16,8 @@ class MatterPackage : ReactPackage {
             DescriptorClusterModule(reactContext),
             GeneralDiagnosticsClusterModule(reactContext),
             OnOffClusterModule(reactContext),
-            LevelControlClusterModule(reactContext)
+            LevelControlClusterModule(reactContext),
+            ColorControlClusterModule(reactContext)
         )
     }
 
