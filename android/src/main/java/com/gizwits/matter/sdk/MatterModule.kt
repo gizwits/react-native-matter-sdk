@@ -1,20 +1,11 @@
 package com.gizwits.matter.sdk
 
 import android.app.Application
-import android.util.Log
-import chip.devicecontroller.ChipDeviceController
-import chip.devicecontroller.ControllerParams
 import chip.platform.*
-import chip.setuppayload.SetupPayload
-import chip.setuppayload.SetupPayloadParser
-import chip.setuppayload.SetupPayloadParser.SetupPayloadException
-import chip.setuppayload.SetupPayloadParser.UnrecognizedQrCodeException
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
-import com.gizwits.matter.sdk.core.model.MatterSetupPayload
-import com.gizwits.matter.sdk.core.model.asMatterSetupPayload
 import com.google.gson.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -78,7 +69,7 @@ class MatterModule(reactContext: ReactApplicationContext) :
             Matter.openPairingWindowCallback(
                 devicePointer = devicePointer,
                 duration = duration
-            ).onFailure {
+            ).onSuccess {
                 promise.resolve(null)
             }.onFailure {
                 promise.reject(it)

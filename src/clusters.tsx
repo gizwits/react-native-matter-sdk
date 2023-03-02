@@ -119,6 +119,17 @@ export class OnOffCluster extends BaseCluster {
     )
   }
 
+  /**
+   * 读取开关状态
+   * @returns 成功则返回开关状态
+   */
+  readOnOff(): Promise<boolean> {
+    return OnOffClusterModule.readOnOff(
+      this.devicePointerStr,
+      this.endpointId
+    )
+  }
+
 }
 
 export class LevelControlCluster extends BaseCluster {

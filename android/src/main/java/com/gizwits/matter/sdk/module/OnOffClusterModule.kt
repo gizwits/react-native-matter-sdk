@@ -1,13 +1,10 @@
 package com.gizwits.matter.sdk.module
 
-import android.util.Log
-import chip.devicecontroller.ChipClusters.DefaultClusterCallback
-import chip.devicecontroller.ChipClusters.OnOffCluster
+import chip.devicecontroller.ChipClusters.*
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
-import kotlin.Exception
 
 class OnOffClusterModule(
     reactContext: ReactApplicationContext
@@ -57,6 +54,24 @@ class OnOffClusterModule(
 
                 override fun onSuccess() {
                     promise.resolve(null)
+                }
+
+                override fun onError(error: Exception) {
+                    promise.reject(error)
+                }
+
+            }
+        )
+    }
+
+    @ReactMethod
+    fun readOnOff(devicePointerStr: String, endpointId: Int, promise: Promise) {
+        val devicePointer: Long = devicePointerStr.toLong()
+        OnOffCluster(devicePointer, endpointId).readOnOffAttribute(
+            object : BooleanAttributeCallback {
+
+                override fun onSuccess(value: Boolean) {
+                    promise.resolve(value)
                 }
 
                 override fun onError(error: Exception) {

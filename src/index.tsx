@@ -41,9 +41,9 @@ export function openPairingWindowCallback(devicePointerStr: string, duration: nu
  * @returns 成功则返回设备ID（长整形）的字符串表现形式
  */
 export function pairDeviceWithBle(
-  deviceIdStr: number,
+  deviceIdStr: string,
   discriminator: number,
-  setupPinCodeStr: number,
+  setupPinCodeStr: string,
   wifiSSID: string,
   wifiPassword: string
 ): Promise<string> {
