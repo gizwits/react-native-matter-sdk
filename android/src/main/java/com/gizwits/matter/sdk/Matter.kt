@@ -6,10 +6,7 @@ import android.bluetooth.*
 import android.bluetooth.le.*
 import android.content.Context
 import android.os.ParcelUuid
-import chip.devicecontroller.ChipDeviceController
-import chip.devicecontroller.ControllerParams
-import chip.devicecontroller.GetConnectedDeviceCallbackJni
-import chip.devicecontroller.NetworkCredentials
+import chip.devicecontroller.*
 import chip.platform.*
 import chip.setuppayload.SetupPayloadParser
 import com.gizwits.matter.sdk.common.PairCompletionListener
@@ -97,6 +94,42 @@ object Matter {
 
                         override fun onConnectionFailure(deviceId: Long, exception: Exception) {
                             it.resumeWith(Result.failure(exception))
+                        }
+
+                    }
+                )
+            }
+        }.onFailure {
+            if (it is CancellationException) throw it
+        }
+    }
+
+    /**
+     * 开启指定设备的配对窗口
+     * @param devicePointer 设备的指针
+     * @param duration 持续时间，单位：秒
+     */
+    suspend fun openPairingWindowCallback(
+        devicePointer: Long,
+        duration: Int
+    ): Result<Unit> {
+        return runCatching {
+            suspendCancellableCoroutine {
+                chipDeviceController.openPairingWindowCallback(
+                    devicePointer,
+                    duration,
+                    object : OpenCommissioningCallback {
+
+                        override fun onSuccess(deviceId: Long, manualPairingCode: String?, qrCode: String?) {
+                            it.resumeWith(Result.success(Unit))
+                        }
+
+                        override fun onError(status: Int, deviceId: Long) {
+                            it.resumeWith(
+                                Result.failure(Exception("OpenBasicCommissioning Fail! \n" +
+                                        "Device ID : $deviceId\n" +
+                                        "ErrorCode : $status"))
+                            )
                         }
 
                     }

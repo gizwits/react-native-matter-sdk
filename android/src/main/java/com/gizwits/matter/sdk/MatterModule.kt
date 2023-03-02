@@ -63,6 +63,30 @@ class MatterModule(reactContext: ReactApplicationContext) :
     }
 
     /**
+     * 开启指定设备的配对窗口
+     * @param devicePointer 设备的指针
+     * @param duration 持续时间，单位：秒
+     */
+    @ReactMethod
+    fun openPairingWindowCallback(
+        devicePointerStr: String,
+        duration: Int,
+        promise: Promise
+    ) {
+        val devicePointer: Long = devicePointerStr.toLong()
+        moduleScope.launch {
+            Matter.openPairingWindowCallback(
+                devicePointer = devicePointer,
+                duration = duration
+            ).onFailure {
+                promise.resolve(null)
+            }.onFailure {
+                promise.reject(it)
+            }
+        }
+    }
+
+    /**
      * 通过蓝牙搜索并配对设备，并将其添加至网络
      * @param deviceIdStr 设备的ID的字符串表现形式
      * @param discriminator 设备识别码
