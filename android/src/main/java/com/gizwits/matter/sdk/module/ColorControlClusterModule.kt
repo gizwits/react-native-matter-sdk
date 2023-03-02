@@ -2,6 +2,7 @@ package com.gizwits.matter.sdk.module
 
 import chip.devicecontroller.ChipClusters.ColorControlCluster
 import chip.devicecontroller.ChipClusters.DefaultClusterCallback
+import chip.devicecontroller.ChipClusters.IntegerAttributeCallback
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -37,6 +38,42 @@ class ColorControlClusterModule(
 
             },
             hue, saturation, transitionTime, optionsMask, optionsOverride
+        )
+    }
+
+    @ReactMethod
+    fun readCurrentHue(devicePointerStr: String, endpointId: Int, promise: Promise) {
+        val devicePointer: Long = devicePointerStr.toLong()
+        ColorControlCluster(devicePointer, endpointId).readCurrentHueAttribute(
+            object : IntegerAttributeCallback {
+
+                override fun onSuccess(value: Int) {
+                    promise.resolve(value)
+                }
+
+                override fun onError(error: Exception) {
+                    promise.reject(error)
+                }
+
+            }
+        )
+    }
+
+    @ReactMethod
+    fun readCurrentSaturation(devicePointerStr: String, endpointId: Int, promise: Promise) {
+        val devicePointer: Long = devicePointerStr.toLong()
+        ColorControlCluster(devicePointer, endpointId).readCurrentSaturationAttribute(
+            object : IntegerAttributeCallback {
+
+                override fun onSuccess(value: Int) {
+                    promise.resolve(value)
+                }
+
+                override fun onError(error: Exception) {
+                    promise.reject(error)
+                }
+
+            }
         )
     }
 

@@ -195,7 +195,11 @@ export class ColorControlCluster extends BaseCluster {
    * @returns 
    */
   moveToHueAndSaturation(
-    hue: number, saturation: number, transitionTime: number, optionsMask: number, optionsOverride: number
+    hue: number, 
+    saturation: number, 
+    transitionTime: number, 
+    optionsMask: number, 
+    optionsOverride: number
   ): Promise<undefined> {
     return ColorControlClusterModule.moveToHueAndSaturation(
       this.devicePointerStr,
@@ -205,6 +209,28 @@ export class ColorControlCluster extends BaseCluster {
       transitionTime,
       optionsMask,
       optionsOverride
+    )
+  }
+
+  /**
+   * 读取当前色调值
+   * @returns 
+   */
+  readCurrentHue(): Promise<number> {
+    return ColorControlClusterModule.readCurrentHue(
+      this.devicePointerStr,
+      this.endpointId
+    )
+  }
+
+  /**
+   * 读取当前饱和度
+   * @returns 
+   */
+  readCurrentSaturation(): Promise<number> {
+    return ColorControlClusterModule.readCurrentSaturation(
+      this.devicePointerStr,
+      this.endpointId
     )
   }
 
