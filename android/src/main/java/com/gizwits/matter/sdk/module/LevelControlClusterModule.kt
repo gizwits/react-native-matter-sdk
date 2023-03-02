@@ -2,6 +2,7 @@ package com.gizwits.matter.sdk.module
 
 import chip.devicecontroller.ChipClusters.DefaultClusterCallback
 import chip.devicecontroller.ChipClusters.LevelControlCluster
+import chip.devicecontroller.ChipClusters.LevelControlCluster.CurrentLevelAttributeCallback
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -34,6 +35,28 @@ class LevelControlClusterModule(
                 }
 
             }, alpha, red, green, blue
+        )
+    }
+
+    @ReactMethod
+    fun readCurrentLevel(devicePointerStr: String, endpointId: Int, promise: Promise) {
+        val devicePointer: Long = devicePointerStr.toLong()
+        LevelControlCluster(devicePointer, endpointId).readCurrentLevelAttribute(
+            object : CurrentLevelAttributeCallback {
+
+                override fun onSuccess(value: Int?) {
+                    if (value != null) {
+                        promise.resolve(value)
+                    } else {
+                        promise.reject(Exception("Unknown error"))
+                    }
+                }
+
+                override fun onError(error: Exception) {
+                    promise.reject(error)
+                }
+
+            }
         )
     }
 

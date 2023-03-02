@@ -153,6 +153,17 @@ export class LevelControlCluster extends BaseCluster {
     )
   }
 
+  /**
+   * 读取当前等级值
+   * @returns 成功则返回当前等级值
+   */
+  readCurrentLevel(): Promise<number> {
+    return LevelControlClusterModule.readCurrentLevel(
+      this.devicePointerStr,
+      this.endpointId
+    )
+  }
+
 }
 
 export class GeneralDiagnosticsCluster extends BaseCluster {
