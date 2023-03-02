@@ -113,7 +113,7 @@ object Matter {
         devicePointer: Long,
         duration: Int
     ): Result<Unit> {
-        return runCatching {
+        return runCatching<Matter, Unit>{
             suspendCancellableCoroutine {
                 chipDeviceController.openPairingWindowCallback(
                     devicePointer,
