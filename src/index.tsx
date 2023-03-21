@@ -13,6 +13,17 @@ export function parseForSetupPayload(qrCodeContent: string): Promise<string> {
 }
 
 /**
+ * 解析Matter设备的手动配对码，返回用于配对设备的负载信息
+ * @param manualCode 设备的手动配对码
+ * @returns 成功则返回Json形式的设备产品信息
+ */
+export function parseManualCodeForSetupPayload(
+  manualCode: string
+): Promise<string> {
+  return MatterModule.parseManualCodeForSetupPayload(manualCode);
+}
+
+/**
  * 根据设备ID获取映射到已配对设备的指针
  * @param deviceIdStr 设备ID的字符串表现形式
  * @returns 成功则返回设备的指针（长整形）的字符串表现形式
@@ -27,8 +38,30 @@ export function getPairedDevicePointer(deviceIdStr: string): Promise<string> {
  * @param duration 开启的持续时间，单位：秒
  * @returns
  */
-export function openPairingWindowCallback(devicePointerStr: string, duration: number): Promise<undefined> {
-  return MatterModule.openPairingWindowCallback(devicePointerStr, duration)
+export function openPairingWindowCallback(
+  devicePointerStr: string,
+  duration: number
+): Promise<undefined> {
+  return MatterModule.openPairingWindowCallback(devicePointerStr, duration);
+}
+
+/**
+ * 通过局域网搜索并配对设备
+ * @param deviceIdStr 设备的ID的字符串表现形式
+ * @param discriminator 设备识别码
+ * @param setupPinCodeStr 身份校验码的字符串表现形式
+ * @returns 成功则返回设备ID（长整形）的字符串表现形式
+ */
+export function pairDeviceWithAddress(
+  deviceIdStr: string,
+  discriminator: number,
+  setupPinCodeStr: string
+): Promise<string> {
+  return MatterModule.pairDeviceWithAddress(
+    deviceIdStr,
+    discriminator,
+    setupPinCodeStr
+  );
 }
 
 /**

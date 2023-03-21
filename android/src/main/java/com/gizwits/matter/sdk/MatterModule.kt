@@ -1,15 +1,15 @@
 package com.gizwits.matter.sdk
 
 import android.app.Application
+import android.util.Log
+import chip.devicecontroller.DiscoveredDevice
 import chip.platform.*
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
 import com.google.gson.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class MatterModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
@@ -28,6 +28,21 @@ class MatterModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun parseForSetupPayload(qrCodeContent: String, promise: Promise) {
         Matter.parseForSetupPayload(qrCodeContent)
+            .onSuccess {
+                promise.resolve(it)
+            }.onFailure {
+                promise.reject(it)
+            }
+    }
+
+    /**
+     * 解析Matter设备的手动配对码，返回用于配对设备的负载信息
+     * @param manualCode 设备的手动配对码
+     * @param promise 成功则返回Json形式的设备产品信息，否则返回异常
+     */
+    @ReactMethod
+    fun parseManualCodeForSetupPayload(manualCode: String, promise: Promise) {
+        Matter.parseManualCodeForSetupPayload(manualCode)
             .onSuccess {
                 promise.resolve(it)
             }.onFailure {
@@ -71,6 +86,35 @@ class MatterModule(reactContext: ReactApplicationContext) :
                 duration = duration
             ).onSuccess {
                 promise.resolve(null)
+            }.onFailure {
+                promise.reject(it)
+            }
+        }
+    }
+
+    /**
+     * 通过局域网搜索并配对设备
+     * @param deviceIdStr 设备的ID的字符串表现形式
+     * @param discriminator 设备识别码
+     * @param setupPinCodeStr 身份校验码的字符串表现形式
+     * @param promise 成功则返回设备的ID，否则返回异常
+     */
+    @ReactMethod()
+    fun pairDeviceWithAddress(
+        deviceIdStr: String,
+        discriminator: Int,
+        setupPinCodeStr: String,
+        promise: Promise
+    ) {
+        val deviceId: Long = deviceIdStr.toLong()
+        val setupPinCode: Long = setupPinCodeStr.toLong()
+        moduleScope.launch {
+            Matter.pairDeviceWithAddress(
+                deviceId = deviceId,
+                discriminator = discriminator,
+                setupPinCode = setupPinCode
+            ).onSuccess {
+                promise.resolve(it.toString())
             }.onFailure {
                 promise.reject(it)
             }

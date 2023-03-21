@@ -6,8 +6,10 @@ import android.bluetooth.*
 import android.bluetooth.le.*
 import android.content.Context
 import android.os.ParcelUuid
+import android.util.Log
 import chip.devicecontroller.*
 import chip.platform.*
+import chip.setuppayload.SetupPayload
 import chip.setuppayload.SetupPayloadParser
 import com.gizwits.matter.sdk.common.PairCompletionListener
 import com.gizwits.matter.sdk.core.model.MatterSetupPayload
@@ -65,12 +67,28 @@ object Matter {
     /**
      * 解析Matter设备所关联的配对二维码内容，返回用于配对设备的负载信息
      * @param qrCodeContent 设备二维码内容
+     * @return 配对设备的负载信息
      */
     fun parseForSetupPayload(qrCodeContent: String): Result<String> {
         return runCatching {
             gson.toJson(
                 setupPayloadParser
                     .parseQrCode(qrCodeContent)
+                    .asMatterSetupPayload()
+            )
+        }
+    }
+
+    /**
+     * 解析Matter设备的手动配对码，返回用于配对设备的负载信息
+     * @param manualCode 设备的手动配对码
+     * @return 配对设备的负载信息
+     */
+    fun parseManualCodeForSetupPayload(manualCode: String): Result<String> {
+        return runCatching {
+            gson.toJson(
+                setupPayloadParser
+                    .parseManualEntryCode(manualCode)
                     .asMatterSetupPayload()
             )
         }
@@ -137,6 +155,45 @@ object Matter {
             }
         }.onFailure {
             if (it is CancellationException) throw it
+        }
+    }
+
+    /**
+     * 通过局域网搜索并配对设备
+     * @param deviceId 设备的ID
+     * @param discriminator 设备识别码
+     * @param setupPinCode 身份校验码
+     */
+    suspend fun pairDeviceWithAddress(
+        deviceId: Long,
+        discriminator: Int,
+        setupPinCode: Long
+    ): Result<Long> {
+        // Step 1、通过SDK接口发现搜索局域网设备，通过设备识别码作为过滤器，过滤出所配对的设备
+        val discoveredDevice: DiscoveredDevice = withTimeoutOrNull(10000) {
+            // TODO
+            return@withTimeoutOrNull null
+        } ?: return Result.failure(Exception("Search for devices timed out"))
+        // Step 4、使用IP地址开始配对设备
+        return withContext(NonCancellable) {
+            callbackFlow {
+                chipDeviceController.setCompletionListener(object : PairCompletionListener() {
+                    override fun onCommissioningComplete(nodeId: Long, errorCode: Int) {
+                        super.onCommissioningComplete(nodeId, errorCode)
+                        // TODO 释放蓝牙设备所持有的资源
+                        chipDeviceController.close()
+                        if (errorCode == 0) {
+                            trySend(Result.success(deviceId))
+                        } else {
+                            trySend(Result.failure(Exception("${errorCode} - Pairing device failed")))
+                        }
+                    }
+                })
+                chipDeviceController.pairDeviceWithAddress(
+                    deviceId, discoveredDevice.ipAddress, 5540, discriminator, setupPinCode, null
+                )
+                awaitClose()
+            }.first()
         }
     }
 
