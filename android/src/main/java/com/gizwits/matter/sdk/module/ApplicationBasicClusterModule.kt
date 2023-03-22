@@ -1,7 +1,7 @@
 package com.gizwits.matter.sdk.module
 
-import chip.devicecontroller.ChipClusters.BasicCluster
-import chip.devicecontroller.ChipClusters.BasicCluster.VendorIDAttributeCallback
+import chip.devicecontroller.ChipClusters.ApplicationBasicCluster
+import chip.devicecontroller.ChipClusters.ApplicationBasicCluster.VendorIDAttributeCallback
 import chip.devicecontroller.ChipClusters.CharStringAttributeCallback
 import chip.devicecontroller.ChipClusters.IntegerAttributeCallback
 import com.facebook.react.bridge.Promise
@@ -10,14 +10,14 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import java.lang.Exception
 
-class BasicClusterModule(
+class ApplicationBasicClusterModule(
     reactContext: ReactApplicationContext
 ) : ReactContextBaseJavaModule(reactContext) {
 
     @ReactMethod
     fun readVendorID(devicePointerStr: String, endpointId: Int, promise: Promise) {
         val devicePointer: Long = devicePointerStr.toLong()
-        BasicCluster(devicePointer, endpointId).readVendorIDAttribute(
+        ApplicationBasicCluster(devicePointer, endpointId).readVendorIDAttribute(
             object : VendorIDAttributeCallback {
 
                 override fun onSuccess(vendorId: Int) {
@@ -35,7 +35,7 @@ class BasicClusterModule(
     @ReactMethod
     fun readVendorName(devicePointerStr: String, endpointId: Int, promise: Promise) {
         val devicePointer: Long = devicePointerStr.toLong()
-        BasicCluster(devicePointer, endpointId).readVendorNameAttribute(
+        ApplicationBasicCluster(devicePointer, endpointId).readVendorNameAttribute(
             object : CharStringAttributeCallback {
 
                 override fun onSuccess(vendorName: String) {
@@ -53,7 +53,7 @@ class BasicClusterModule(
     @ReactMethod
     fun readProductId(devicePointerStr: String, endpointId: Int, promise: Promise) {
         val devicePointer: Long = devicePointerStr.toLong()
-        BasicCluster(devicePointer, endpointId).readProductIDAttribute(
+        ApplicationBasicCluster(devicePointer, endpointId).readProductIDAttribute(
             object : IntegerAttributeCallback {
 
                 override fun onSuccess(productId: Int) {
@@ -71,7 +71,7 @@ class BasicClusterModule(
     @ReactMethod
     fun readProductName(devicePointerStr: String, endpointId: Int, promise: Promise) {
         val devicePointer: Long = devicePointerStr.toLong()
-        BasicCluster(devicePointer, endpointId).readProductNameAttribute(
+        ApplicationBasicCluster(devicePointer, endpointId).readApplicationNameAttribute(
             object : CharStringAttributeCallback {
 
                 override fun onSuccess(productName: String) {

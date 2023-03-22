@@ -6,7 +6,6 @@ import android.bluetooth.*
 import android.bluetooth.le.*
 import android.content.Context
 import android.os.ParcelUuid
-import android.util.Log
 import chip.devicecontroller.*
 import chip.platform.*
 import chip.setuppayload.SetupPayload
@@ -171,7 +170,28 @@ object Matter {
     ): Result<Long> {
         // Step 1、通过SDK接口发现搜索局域网设备，通过设备识别码作为过滤器，过滤出所配对的设备
         val discoveredDevice: DiscoveredDevice = withTimeoutOrNull(10000) {
-            // TODO
+            try {
+                while (isActive) {
+                    chipDeviceController.discoverCommissionableNodes()
+                    delay(3500)
+                    // 检索已发现的设备
+                    for (index in 0..Int.MAX_VALUE) {
+                        val device: DiscoveredDevice? = chipDeviceController.getDiscoveredDevice(index)
+                        if (device == null) {
+                            // 未搜索到任何设备，等待重试
+                            delay(500)
+                            break
+                        }
+                        if (device.discriminator == discriminator.toLong()) {
+                            // 识别码一致，返回设备对象
+                            return@withTimeoutOrNull device
+                        }
+                    }
+                }
+            } finally {
+                // 获取一次已发现的设备，停止Matter SDK内部发现设备的业务
+                chipDeviceController.getDiscoveredDevice(0)
+            }
             return@withTimeoutOrNull null
         } ?: return Result.failure(Exception("Search for devices timed out"))
         // Step 4、使用IP地址开始配对设备

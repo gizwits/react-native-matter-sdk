@@ -26,7 +26,7 @@ class GeneralDiagnosticsClusterModule(
         GeneralDiagnosticsCluster(devicePointer, endpointId).readNetworkInterfacesAttribute(
             object : NetworkInterfacesAttributeCallback {
 
-                override fun onSuccess(networkInterfaces: MutableList<ChipStructs.GeneralDiagnosticsClusterNetworkInterfaceType>) {
+                override fun onSuccess(networkInterfaces: MutableList<ChipStructs.GeneralDiagnosticsClusterNetworkInterface>) {
                     val deviceNetworkInterface: List<DeviceNetworkInterface> = networkInterfaces.map {
                         DeviceNetworkInterface(
                             name = it.name,

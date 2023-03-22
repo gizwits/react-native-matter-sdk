@@ -12,7 +12,7 @@ class MatterPackage : ReactPackage {
     override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
         return listOf(
             MatterModule(reactContext),
-            BasicClusterModule(reactContext),
+            ApplicationBasicClusterModule(reactContext),
             DescriptorClusterModule(reactContext),
             GeneralDiagnosticsClusterModule(reactContext),
             OnOffClusterModule(reactContext),
