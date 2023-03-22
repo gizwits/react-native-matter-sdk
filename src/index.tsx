@@ -24,6 +24,17 @@ export function parseManualCodeForSetupPayload(
 }
 
 /**
+ * 获取Matter设备的手动配对码
+ * @param payload 设备原始配对信息的Json字符串（由parseForSetupPayload接口返回的内容）
+ * @returns 成功则返回设备的手动配对码
+ */
+export function getManualEntryCodeFromPayload(
+  payload: string
+): Promise<string> {
+  return MatterModule.getManualEntryCodeFromPayload(payload)
+}
+
+/**
  * 根据设备ID获取映射到已配对设备的指针
  * @param deviceIdStr 设备ID的字符串表现形式
  * @returns 成功则返回设备的指针（长整形）的字符串表现形式

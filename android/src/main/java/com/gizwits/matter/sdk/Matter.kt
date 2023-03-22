@@ -8,6 +8,7 @@ import android.content.Context
 import android.os.ParcelUuid
 import chip.devicecontroller.*
 import chip.platform.*
+import chip.setuppayload.DiscoveryCapability
 import chip.setuppayload.SetupPayload
 import chip.setuppayload.SetupPayloadParser
 import com.gizwits.matter.sdk.common.PairCompletionListener
@@ -89,6 +90,71 @@ object Matter {
                 setupPayloadParser
                     .parseManualEntryCode(manualCode)
                     .asMatterSetupPayload()
+            )
+        }
+    }
+
+    /**
+     * 获取Matter设备手动配对码
+     * @param payload 设备配对信息的json字符串形式
+     * @return 设备手动配对码
+     */
+    fun getManualEntryCodeFromPayload(payload: String): Result<String> {
+        val matterSetupPayload: MatterSetupPayload = gson
+            .fromJson(payload, MatterSetupPayload::class.java)
+        val discoveryCapabilities: List<DiscoveryCapability> =
+            matterSetupPayload.discoveryCapabilities.map {
+                DiscoveryCapability.valueOf(it)
+            }
+        return runCatching {
+            setupPayloadParser.getManualEntryCodeFromPayload(
+                SetupPayload(
+                    matterSetupPayload.version,
+                    matterSetupPayload.vendorId,
+                    matterSetupPayload.productId,
+                    matterSetupPayload.commissioningFlow,
+                    discoveryCapabilities.toSet(),
+                    matterSetupPayload.discriminator,
+                    matterSetupPayload.hasShortDiscriminator,
+                    matterSetupPayload.setupPinCode
+                )
+            )
+        }
+    }
+
+    /**
+     * 获取Matter设备手动配对码
+     * @param version 版本号
+     * @param vendorId 厂商ID
+     * @param productId 产品ID
+     * @param commissioningFlow 当前委托模式？
+     * @param discoveryCapabilities 发现设备的方式
+     * @param discriminator 设备识别码
+     * @param hasShortDiscriminator 是否为短的识别码
+     * @param setupPinCode 设备配对码
+     */
+    fun getManualEntryCodeFromPayload(
+        version: Int,
+        vendorId: Int,
+        productId: Int,
+        commissioningFlow: Int,
+        discoveryCapabilities: List<DiscoveryCapability>,
+        discriminator: Int,
+        hasShortDiscriminator: Boolean,
+        setupPinCode: Long
+    ): Result<String> {
+        return runCatching {
+            setupPayloadParser.getManualEntryCodeFromPayload(
+                SetupPayload(
+                    version,
+                    vendorId,
+                    productId,
+                    commissioningFlow,
+                    discoveryCapabilities.toSet(),
+                    discriminator,
+                    hasShortDiscriminator,
+                    setupPinCode
+                )
             )
         }
     }

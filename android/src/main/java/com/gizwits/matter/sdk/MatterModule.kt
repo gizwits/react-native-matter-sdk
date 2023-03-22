@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import chip.devicecontroller.DiscoveredDevice
 import chip.platform.*
+import chip.setuppayload.DiscoveryCapability
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
@@ -48,6 +49,24 @@ class MatterModule(reactContext: ReactApplicationContext) :
             }.onFailure {
                 promise.reject(it)
             }
+    }
+
+    /**
+     * 获取Matter设备手动配对码
+     * @param payload 设备配对信息的json字符串形式
+     */
+    @ReactMethod
+    fun getManualEntryCodeFromPayload(
+        payload: String,
+        promise: Promise
+    ) {
+        Matter.getManualEntryCodeFromPayload(
+            payload = payload
+        ).onSuccess {
+            promise.resolve(it)
+        }.onFailure {
+            promise.reject(it)
+        }
     }
 
     /**
